@@ -9,21 +9,21 @@ public class Person {
 	double personAngle = 0;
 	int rep = 0;
 	double size = 1;
-	limb torso;
-	limb neck;
-	limb head;
+	public limb torso;
+	public limb neck;
+	public limb head;
 	
-	limb left_Humerus;
-	limb left_Radius;
-	limb left_Clavicle;
-	limb left_Femur;
-	limb left_Tibia;
+	public limb left_Humerus;
+	public limb left_Radius;
+	public limb left_Clavicle;
+	public limb left_Femur;
+	public limb left_Tibia;
 	
-	limb right_Humerus;
-	limb right_Radius;
-	limb right_Clavicle;
-	limb right_Femur;
-	limb right_Tibia;
+	public limb right_Humerus;
+	public limb right_Radius;
+	public limb right_Clavicle;
+	public limb right_Femur;
+	public limb right_Tibia;
 	
 	joint lower_neck;
 	joint upper_neck;
@@ -126,6 +126,10 @@ public class Person {
 			length = l;
 			name=name_;
 		}
+		//+=+=+=+=+=+=+=+=+=+=+=+=
+		public void pointAt(Point2D at){
+			angle = Math.toDegrees(Math.atan2((center.getY() - at.getY()), (center.getX() - at.getX())))-90;
+			}
 		//+=+=+=+=+=+=+=+=+=+=+=+=
 		public String getName(){
 			return name;	

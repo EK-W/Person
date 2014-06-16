@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 public class Person {
 	double personAngle = 0;
@@ -54,36 +55,11 @@ public class Person {
 		right_Femur=new limb("Right Femur",5,40,150);
 		left_Tibia=new limb("Left Tibia",5,40,180);
 		right_Tibia=new limb("Right Tibia",5,40,180);
-		
-		upper_neck=new joint(neck,head,false,true);
-		lower_neck=new joint(torso,neck,true,true);
-		left_Shoulder_Joint = new joint(left_Clavicle,left_Humerus,false,true);
-		right_Shoulder_Joint = new joint(right_Clavicle,right_Humerus,false,true);
-		left_Elbow = new joint(left_Humerus,left_Radius,false,true);
-		right_Elbow = new joint(right_Humerus,right_Radius,false,true);
-		left_Shoulder_Pivot_Joint = new joint(torso,left_Clavicle,true,true);
-		right_Shoulder_Pivot_Joint = new joint(torso,right_Clavicle,true,true);
-		left_Pelvic_Joint = new joint(torso,left_Femur,false,true);
-		right_Pelvis_Joint = new joint(torso,right_Femur,false,true);
-		left_Knee=new joint(left_Femur,left_Tibia,false,true);
-		right_Knee=new joint(right_Femur,right_Tibia,false,true);
 		System.out.println("Person creation complete.");
 		System.out.println("I will call him bobertson.");
 	}
 	
 	public void draw(Graphics2D g){
-	left_Shoulder_Pivot_Joint.connect();
-	right_Shoulder_Pivot_Joint.connect();
-	left_Shoulder_Joint.connect();
-	right_Shoulder_Joint.connect();
-	right_Elbow.connect();
-	left_Elbow.connect();
-	left_Pelvic_Joint.connect();
-	right_Pelvis_Joint.connect();
-	left_Knee.connect();
-	right_Knee.connect();
-	lower_neck.connect();
-	upper_neck.connect();
 	torso.draw(g);
 	neck.draw(g);
 	left_Clavicle.draw(g);
@@ -100,13 +76,15 @@ public class Person {
 	}
 //+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=	
 	class limb{
-		private String name;
+		public String name;
 		public Color color;
 		public Point2D center = new Point2D.Double();
 		public boolean rounded;
 		public double thickness;
 		public double angle;
 		public double length;
+		private boolean automatic;
+		public Point2D end = new Point2D.Double();
 		//+=+=+=+=+=+=+=+=+=+=+=+=
 		public limb(String name_){
 			color=Color.black;
@@ -116,6 +94,7 @@ public class Person {
 			angle = 180;
 			length = 10;
 			name=name_;
+			automatic = true;
 		}
 		public limb(String name_,double t,double l, double a){
 			color=Color.black;
@@ -125,14 +104,11 @@ public class Person {
 			angle = a;
 			length = l;
 			name=name_;
+			automatic = true;
 		}
 		//+=+=+=+=+=+=+=+=+=+=+=+=
-		public void pointAt(Point2D at){
-			angle = Math.toDegrees(Math.atan2((center.getY() - at.getY()), (center.getX() - at.getX())))-90;
-			}
-		//+=+=+=+=+=+=+=+=+=+=+=+=
-		public String getName(){
-			return name;	
+		public void setAutomatic(boolean which){
+			automatic = which;
 		}
 		//+=+=+=+=+=+=+=+=+=+=+=+=
 		public Point2D end(){
@@ -165,67 +141,6 @@ public class Person {
 
 	}
 	
-	class joint{
-		public limb dominantLimb;
-		public limb agreeingLimb;
-		public boolean dominantCenter;
-		public boolean agreeingCenter;
-		public boolean connected;
-		
-		public joint(limb dominant, limb agreeing){
-			create(dominant,agreeing,false,true);
-		}
-		public joint(limb dominant, boolean dc, limb agreeing, boolean ac){
-			create(dominant,agreeing,dc,ac);	
-		}
-		public joint(limb dominant,limb agreeing, boolean dc, boolean ac){
-			create(dominant,agreeing,dc,ac);	
-		}
-		
-		public void Dominant_Center(){dominantCenter=true;	}
-		public void Dominant_End(){dominantCenter=false;	}
-		public void Agreeing_Center(){agreeingCenter=true;	}
-		public void Agreeing_End(){agreeingCenter=false;	}
-		
-		private void create(limb dominant, limb agreeing, boolean dc, boolean ac){
-		connected=true;
-		dominantLimb = dominant;
-		agreeingLimb = agreeing;
-		dominantCenter=dc;
-		agreeingCenter=ac;
-		}
-		
-		public void connect(){
-		if(connected){
-			Point2D dominantPoint;
-			if(dominantCenter)dominantPoint = dominantLimb.center;
-			else dominantPoint = dominantLimb.end();
-		if(agreeingCenter){
-			agreeingLimb.center.setLocation(dominantPoint);
-		}else{
-			double tempAngle = degreesTo(agreeingLimb.end(),agreeingLimb.center);
-			agreeingLimb.center.setLocation(findCenter(tempAngle,dominantPoint));
-		}
-		}
-		}
-		private Point2D findCenter(double angle_,Point2D thing){
-			double a = angle_+personAngle+90;
-			double newX=(thing.getX()+(Math.cos(Math.toRadians(a)*-1)*agreeingLimb.length*size));
-			double newY=(thing.getY()+(Math.sin(Math.toRadians(a)*-1)*agreeingLimb.length*size));
-			return new Point2D.Double(newX,newY);
-		}
-		private  double degreesTo(Point2D from,Point2D at){
-			return (Math.toDegrees(Math.atan2((from.getY() - at.getY()), -(from.getX() - at.getX()))))-90;
-		}
-		public void breakConnection(){
-			connected=false;
-		}
-		public void fixConnection(){
-			connected=true;
-		}
-	}
-	class tool{
-		
-	}
+	class joint{}
 }
 
